@@ -1,0 +1,43 @@
+# ─── Identity ─────────────────────────────────────────────────────────────────
+# 'name' must match the folder name under backend/tools/ used by the platform
+# manifest loader.
+tool_id            = "document_record_inspector"
+name               = "document_record_inspector"
+version            = "0.1.0"
+enabled_by_default = false
+
+# ─── API ──────────────────────────────────────────────────────────────────────
+[api]
+# The router defines its own prefix ("/v1/tools/document_record_inspector"), so
+# mount_prefix is empty to avoid double-prefixing.
+router_import = "document_record_inspector.api.router:router"
+mount_prefix  = ""
+tags          = ["tools:document_record_inspector"]
+
+# ─── Agent Tool ───────────────────────────────────────────────────────────────
+[agent_tool]
+# Stub placeholders for future agent-mode integration.
+tool_import = "document_record_inspector.tool:TOOL_SPEC"
+run_import  = "document_record_inspector.tool:run"
+
+# ─── Policy ───────────────────────────────────────────────────────────────────
+[policy]
+# Read-only inspection — permitted at all security levels.
+# Operators and agents must supply a valid document_id.
+allowed_security_levels    = ["public", "internal", "protected", "secret"]
+allow_all_groups            = false
+allowed_groups              = []
+required_roles              = []
+requires_network            = false
+requires_filesystem_write   = false
+requires_db                 = true
+
+# ─── Capabilities ─────────────────────────────────────────────────────────────
+[capabilities]
+actions = ["health", "inspect"]
+
+# ─── Template Stamp ───────────────────────────────────────────────────────────
+[template]
+stamp_source           = "manual"
+template_manifest_hash = "758ccc68d99449165c3b2829787a8e74c104851f41e6eee7bbdc09eeef62e703"
+template_version       = "2.0.0"

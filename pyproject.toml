@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "document_record_inspector"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.100",
+    "pydantic>=2",
+    "sqlalchemy>=2",
+    "psycopg[binary]",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7",
+    "httpx>=0.24",
+]
+
+[project.scripts]
+techvault-tool-document-record-inspector = "document_record_inspector.cli.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["document_record_inspector*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v --strict-markers"
