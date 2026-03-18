@@ -3,21 +3,19 @@ name = "document_record_inspector"
 version = "0.1.0"
 entrypoint = "document_record_inspector.api.router:router"
 # Default activation posture after TechVault auto-discovers this tool.
-# Local TechVault operator overrides take precedence; this is the fallback.
-# true = activate on discovery; false = require explicit operator opt-in.
+# false = require explicit operator opt-in (conservative default for an
+# inspection tool that should not be accidentally exposed).
 enabled_by_default = false
 
 [api]
 router_import = "document_record_inspector.api.router:router"
-# Platform-level mount prefix extension. Keep empty unless the platform
-# integration contract requires an additional static prefix segment.
-# Tool router code must still use resource-level prefixes only (for
-# example APIRouter(prefix="/items")).
+# Platform mounts this router under /tools/document-record-inspector.
+# Tool router code uses resource-level paths only (no platform prefix).
 mount_prefix = "/tools/document-record-inspector"
 tags = ["tools:document_record_inspector"]
 
 [capabilities]
-actions = ["search"]
+actions = ["health", "inspect"]
 
 [agent_tool]
 enabled = false
@@ -28,29 +26,27 @@ run_import = "document_record_inspector.tool:run"
 [policy]
 access = "internal"
 data_handling = "standard"
+# This tool reads metadata at all security levels; data is never written.
 allowed_security_levels = ["public", "internal", "protected", "secret"]
 allow_all_groups = false
 allowed_groups = []
 required_roles = []
 requires_network = false
 requires_filesystem_write = false
-requires_db = false
+# Read-only queries against the shared TechVault database.
+requires_db = true
 
 [platform]
-contract_version = "2"
+contract_version = "1"
 
-# Declare [[techvault.adapters]] ONLY when runtime dependency overrides
-# are actually required by TechVault host integration.
-#
-# [[techvault.adapters]]
-# dependency_import = "<tool_pkg>.api.deps:get_records"
-# override_factory_import = "backend.platform.tool_adapters.<tool_id>:get_records_override"
-
-# Optional policy vocabulary (if used by your tool contract):
-# access = "internal"
-# Allowed values: public | internal | confidential | secret
+# Runtime dependency override: inject the TechVault shared DB session so the
+# inspector can query documents, chunks, embeddings, summaries, and ingest_runs.
+[[techvault.adapters]]
+dependency_import      = "document_record_inspector.api.deps:get_db"
+override_factory_import = "backend.platform.tool_adapters.document_record_inspector:get_db_override"
 
 [template]
 stamp_source = "create"
 template_manifest_hash = "14ed35728fb0403ba37ef9bee1b2e5ebc09ae23770ac8bfce9d519501abd494d"
 template_version = "2.0.0"
+
