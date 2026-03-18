@@ -3,9 +3,8 @@ name = "document_record_inspector"
 version = "0.1.0"
 entrypoint = "document_record_inspector.api.router:router"
 # Default activation posture after TechVault auto-discovers this tool.
-# false = require explicit operator opt-in (conservative default for an
-# inspection tool that should not be accidentally exposed).
-enabled_by_default = false
+# true = activate on discovery unless a local override explicitly disables it.
+enabled_by_default = true
 
 [api]
 router_import = "document_record_inspector.api.router:router"
