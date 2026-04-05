@@ -16,6 +16,7 @@ tags          = ["tools:document_record_inspector"]
 
 # ─── Agent Tool ───────────────────────────────────────────────────────────────
 [agent_tool]
+enabled = false
 # Stub placeholders for future agent-mode integration.
 tool_import = "document_record_inspector.tool:TOOL_SPEC"
 run_import  = "document_record_inspector.tool:run"
